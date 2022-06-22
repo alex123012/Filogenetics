@@ -171,14 +171,7 @@ def print_heatmap(path, organism):
                           ha="right", va='center_baseline')
     fig.suptitle(organism, fontsize=30, y=1.0)
     plt.tight_layout(pad=3.0)
-    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.pdf",
-                format='pdf')
-    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.ps",
-                format='ps')
-    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.eps",
-                format='eps')
-    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.svg",
-                format='svg')
+    savefig(fig, f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}")
     plt.show()
 
 
@@ -363,8 +356,11 @@ def print_aln_lystar(gene, organism, tmp, color_map, color_symbols):
     else:
         with_colored += 'blocks'
 
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.ps', format='ps')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.eps', format='eps')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.pdf', format='pdf')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.svg')
+    savefig(fig, f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}')
     plt.show()
+
+def savefig(fig, name):
+    fig.savefig(f'{name}.ps', format='ps')
+    fig.savefig(f'{name}.eps', format='eps')
+    fig.savefig(f'{name}.pdf', format='pdf')
+    fig.savefig(f'{name}.svg', format='svg')
