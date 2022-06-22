@@ -160,16 +160,24 @@ def print_heatmap(path, organism):
     fig, ax = plt.subplots(1, 2, figsize=(27.5, 10))
     sns.heatmap(data=df.pivot(index=lp, columns=sp, values=ev).fillna(1),
                 ax=ax[0], vmax=1e-05, **kwargs)
+    ax[0].set_title('E-value', fontsize=25)
 
     kwargs['cmap'] = kwargs['cmap'] + '_r'
     sns.heatmap(data=df.pivot(index=lp, columns=sp, values=bs).fillna(0),
                 ax=ax[1], **kwargs)
+    ax[1].set_title('Bit score', fontsize=25)
     for i in ax:
         i.set_xticklabels(i.get_xticklabels(), rotation=45,
                           ha="right", va='center_baseline')
-    fig.suptitle(organism, fontsize=30)
-    plt.tight_layout()
-    plt.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.svg",
+    fig.suptitle(organism, fontsize=30, y=1.0)
+    plt.tight_layout(pad=3.0)
+    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.pdf",
+                format='pdf')
+    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.ps",
+                format='ps')
+    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.eps",
+                format='eps')
+    fig.savefig(f"result/img/{path.split('/')[-1].rsplit('.', 1)[0]}.svg",
                 format='svg')
     plt.show()
 
