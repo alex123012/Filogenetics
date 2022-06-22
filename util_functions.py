@@ -17,7 +17,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 plt.style.use('seaborn-poster')
-
+plt.rcParams['svg.fonttype'] = 'none'
 
 lab = pd.read_csv('seqs/csv/Short_len_upar.csv', index_col=0)
 lab.Prot = lab.Prot.str.replace(' ', '_').str.upper()
@@ -201,7 +201,7 @@ def get_aln(gene: str, org: str, star_blast: pd.DataFrame,
 def get_pictures(star_blast, df, uniprot, organism):
 
     star_genes = df.index.unique().tolist()
-    color_map = "-=#ffffff\nA=#7eff00\nC=#ffe300\nD=#ff0000\nE=#ff0000\nF=#7eff00\nG=#ff00e4\nH=#7eff00\nI=#7eff00\nK=#007bff\nL=#7eff00\nM=#7eff00\nN=#ff00e4\nP=#7eff00\nQ=#ff00e4\nR=#7eff00\nS=#ff00e4\nT=#ff00e4\nV=#7eff00\nW=#7eff00\nX=#7eff00\nY=#ff00e4"
+    color_map = "-=#ffffff\nA=#7eff00\nC=#ffe300\nD=#ff0000\nE=#ff0000\nF=#7eff00\nG=#ff00e4\nH=#7eff00\nI=#7eff00\nK=#007bff\nL=#7eff00\nM=#7eff00\nN=#ff00e4\nP=#7eff00\nQ=#ff00e4\nR=#007bff\nS=#ff00e4\nT=#ff00e4\nV=#7eff00\nW=#7eff00\nX=#7eff00\nY=#ff00e4"
     color_map = {i.split('=')[0]: i.split('=')[1]
                  for i in color_map.split('\n')}
     for gene in star_genes:
@@ -334,7 +334,7 @@ def print_aln_lystar(gene, organism, tmp, color_map):
         similarity_kwargs={'func': similarity,
                            'label': 'Similarity',
                            'refseq': 0},
-        show_similarity=True,
+        show_similarity=True, color_symbols=True,
         color_scheme=list(map(color_map.get, sequences[0].get_alphabet()))
     )
     adj = 0.6
@@ -347,5 +347,6 @@ def print_aln_lystar(gene, organism, tmp, color_map):
     ax.set_aspect('equal', share=True)
 
     plt.tight_layout()
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.eps', format='eps')
     fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.svg')
     plt.show()
