@@ -200,7 +200,7 @@ def get_aln(gene: str, org: str, star_blast: pd.DataFrame,
         ).fillna('').reset_index().rename(columns={'index': 'id'})
 
 
-def get_pictures(star_blast, df, uniprot, organism):
+def get_pictures(star_blast, df, uniprot, organism, color_symbols):
 
     star_genes = df.index.unique().tolist()
     color_map = "-=#ffffff\nA=#7eff00\nC=#ffe300\nD=#ff0000\nE=#ff0000\nF=#7eff00\nG=#ff00e4\nH=#7eff00\nI=#7eff00\nK=#007bff\nL=#7eff00\nM=#7eff00\nN=#ff00e4\nP=#7eff00\nQ=#ff00e4\nR=#007bff\nS=#ff00e4\nT=#ff00e4\nV=#7eff00\nW=#7eff00\nX=#7eff00\nY=#ff00e4"
@@ -213,7 +213,7 @@ def get_pictures(star_blast, df, uniprot, organism):
         except KeyError as e:
             print(gene, 'protein has duplicated domain\n', e)
             continue
-        print_aln_lystar(gene, organism, tmp, color_map)
+        print_aln_lystar(gene, organism, tmp, color_map, color_symbols)
 
 
 def get_genes_for_point_aln(star_name):
@@ -301,7 +301,7 @@ def print_loops(loops, ax, pos=-0.1, color='r'):
             j += -add_v if j > st else add_v
 
 
-def print_aln_lystar(gene, organism, tmp, color_map):
+def print_aln_lystar(gene, organism, tmp, color_map, color_symbols):
     gene = gene.split('_|_')[0]
     sequence_dict = {k: ProteinSequence(v)
                      for k, v in tmp.set_index('id').domain.to_dict().items()}
@@ -336,7 +336,7 @@ def print_aln_lystar(gene, organism, tmp, color_map):
         similarity_kwargs={'func': similarity,
                            'label': 'Similarity',
                            'refseq': 0},
-        show_similarity=True, color_symbols=True,
+        show_similarity=True, color_symbols=color_symbols,
         color_scheme=list(map(color_map.get, sequences[0].get_alphabet()))
     )
     adj = 0.6
@@ -349,8 +349,14 @@ def print_aln_lystar(gene, organism, tmp, color_map):
     ax.set_aspect('equal', share=True)
 
     plt.tight_layout()
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.ps', format='ps')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.eps', format='eps')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.pdf', format='pdf')
-    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.svg')
+    with_colored = 'with_colored_'
+    if color_symbols:
+        with_colored += 'symbols'
+    else:
+        with_colored += 'blocks'
+
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.ps', format='ps')
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.eps', format='eps')
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.pdf', format='pdf')
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment_{with_colored}.svg')
     plt.show()
