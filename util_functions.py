@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 
 plt.style.use('seaborn-poster')
 plt.rcParams['svg.fonttype'] = 'none'
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['ps.fonttype'] = 42
 
 lab = pd.read_csv('seqs/csv/Short_len_upar.csv', index_col=0)
 lab.Prot = lab.Prot.str.replace(' ', '_').str.upper()
@@ -347,6 +349,8 @@ def print_aln_lystar(gene, organism, tmp, color_map):
     ax.set_aspect('equal', share=True)
 
     plt.tight_layout()
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.ps', format='ps')
     fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.eps', format='eps')
+    fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.pdf', format='pdf')
     fig.savefig(f'result/img/a{organism.split(" ")[1]}_{gene}_alignment.svg')
     plt.show()
