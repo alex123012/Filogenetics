@@ -117,17 +117,21 @@ def save_df_to_fasta(df, filename, seq_col='sequence', org='org',
         SeqIO.write(req_list, f, 'fasta')
 
 
-def read_blast(name, org):
+def read_blast(name, org, path='blast', bl_name=None, domain=True):
     df = pd.read_csv(f'seqs/csv/{name}', index_col=0)
-    bl_name = name.split('_', 1)[0]
-    bl = pd.read_csv(f'blast/{bl_name}_blast_short.txt',
+    if not bl_name:
+        bl_name = name.split('_', 1)[0]
+    bl = pd.read_csv(f'{path}/{bl_name}_blast_short.txt',
                      index_col=0, sep='\t',
                      header=None).index.unique().tolist()
     df = df.loc[bl].reset_index()
     df['org'] = org
     df['genes'] = df.genes + '_|_' + df.org.str.replace(' ', '_')
-    df['domain'] = df.apply(get_domain, axis=1)
-    return df.drop_duplicates('domain').set_index('genes')
+    dupl = 'sequence'
+    if domain:
+        df['domain'] = df.apply(get_domain, axis=1)
+        dupl = 'domain'
+    return df.drop_duplicates(dupl).set_index('genes')
 # [df.sequence.str.len() < 190]
 
 
@@ -179,10 +183,10 @@ def similarity(x: str, y: str):
     d = {
         '-': 0,
         'A': 1, 'F': 1, 'H': 1, 'I': 1, 'L': 1, 'M': 1,
-        'P': 1, 'R': 1, 'V': 1, 'W': 1, 'X': 1,
+        'P': 1, 'V': 1, 'W': 1, 'X': 1,
         'C': 2, 'D': 3, 'E': 3,
         'G': 4, 'N': 4, 'Q': 4, 'S': 4, 'T': 4, 'Y': 4,
-        'K': 5
+        'K': 5, 'R': 5
     }
     res = [1 for i, j in enumerate(x) if d[j] == d[y[i]]]
     return f'{round(sum(res) * 100 / len(x), 1)}%'
